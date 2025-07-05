@@ -1,0 +1,7 @@
+{
+  "name": "deobfuscator-vip",
+  "version": "1.0.0",
+  "dependencies": {
+    "js-beautify": "^1.14.13"
+  }
+}
