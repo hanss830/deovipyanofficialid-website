@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>VIP Deobfuscator YanOfficialID</title>
+<style>
+    body { background: black; color: #00ff44; font-family: monospace; text-align: center; padding: 50px; }
+    textarea, input { width: 80%; background: #111; color: #00ff44; border: 1px solid #00ff44; padding: 10px; margin: 10px 0; }
+    button { background: #00ff44; color: black; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; box-shadow: 0 0 10px #00ff44; }
+    #deobfSection { display: none; }
+</style>
+</head>
+<body>
+
+<h2>VIP JS Deobfuscator - YanOfficialID</h2>
+
+<div id="loginSection">
+    <input id="username" placeholder="Username"><br>
+    <input id="password" type="password" placeholder="Password"><br>
+    <button onclick="login()">[ Login VIP ]</button>
+    <p id="loginStatus"></p>
+</div>
+
+<div id="deobfSection">
+    <textarea id="kodeInput" placeholder="Tempel kode JS obf di sini..."></textarea><br>
+    <button onclick="deobf()">[ Bongkar Sekarang ]</button>
+    <p id="status"></p>
+    <textarea id="hasilOutput" placeholder="Hasil deobfuscate muncul di sini..." readonly></textarea>
+</div>
+
+<script>
+async function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const res = await fetch('/api/deobf?auth=true', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    });
+    const hasil = await res.json();
+    if (hasil.success) {
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('deobfSection').style.display = 'block';
+    } else {
+        document.getElementById('loginStatus').innerText = "❌ Username atau Password salah";
+    }
+}
+
+async function deobf() {
+    const kode = document.getElementById('kodeInput').value;
+    if (!kode.trim()) return alert("Tempel kode dulu!");
+
+    document.getElementById('status').innerText = "Proses bongkar...";
+    const res = await fetch('/api/deobf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: kode
+    });
+
+    if (res.ok) {
+        const hasil = await res.text();
+        document.getElementById('hasilOutput').value = hasil;
+        document.getElementById('status').innerText = "✅ Selesai!";
+    } else {
+        document.getElementById('status').innerText = "❌ Error saat proses";
+    }
+}
+</script>
+
+</body>
+  </html>
